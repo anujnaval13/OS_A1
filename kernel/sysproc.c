@@ -126,6 +126,15 @@ sys_history(void)
 }
 
 void add_to_history(struct proc *p) {
+  if (p == 0)
+    return;
+
+  // Skip adding "sh", "init", and "history" to history
+  if (strncmp(p->name, "sh", 16) == 0 || 
+      strncmp(p->name, "init", 16) == 0 || 
+      strncmp(p->name, "history", 16) == 0)
+    return;
+
   acquire(&history_lock); // Lock before modifying history
 
   int index = (history_start + history_count) % HISTORY_SIZE; // Circular index

@@ -21,7 +21,7 @@ int main() {
     }
 
     for (int i = 0; i < count; i++) {
-        printf("%d %s %" PRIu64 "\n", hist[i].pid, hist[i].name, hist[i].mem_usage);
+        printf("    %d %s %" PRIu64 "\n", hist[i].pid, hist[i].name, hist[i].mem_usage);
     }
     
 
