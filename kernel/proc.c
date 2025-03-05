@@ -5,6 +5,10 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+//#include "sysproc.c"
+
+void add_to_history(struct proc *p);
+
 
 struct cpu cpus[NCPU];
 
@@ -321,6 +325,12 @@ fork(void)
   acquire(&np->lock);
   np->state = RUNNABLE;
   release(&np->lock);
+
+  if (np) {
+    acquire(&np->lock);
+    add_to_history(np);
+    release(&np->lock);
+  }
 
   return pid;
 }
