@@ -152,3 +152,34 @@ void add_to_history(struct proc *p) {
 
   release(&history_lock); // Unlock after modification
 }
+
+uint64 sys_block(void) {
+  int syscall_id;
+  struct proc *curproc = myproc();
+
+  argint(0, &syscall_id);
+  if (syscall_id < 0 || syscall_id >= MAX_SYSCALLS) {
+      printf("sys_block: Invalid syscall_id = %d\n", syscall_id);
+      return -1;
+  }
+
+  if (syscall_id == SYS_fork || syscall_id == SYS_exit || syscall_id == SYS_exec) {
+      printf("sys_block: Attempted to block critical syscall %d\n", syscall_id);
+      return -1;
+  }
+
+  curproc->blocked_syscalls[syscall_id] = 1;
+  return 0;
+}
+
+uint64 sys_unblock(void) {
+  int syscall_id;
+  struct proc *curproc = myproc();
+
+  argint(0, &syscall_id);
+  if (syscall_id < 0 || syscall_id >= MAX_SYSCALLS)
+      return -1;
+
+  curproc->blocked_syscalls[syscall_id] = 0;
+  return 0;
+}

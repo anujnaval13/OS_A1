@@ -23,6 +23,8 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int gethistory(void *);
+int block(int syscall_id);
+int unblock(int syscall_id);
 
 
 // ulib.c

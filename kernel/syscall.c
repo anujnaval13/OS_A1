@@ -102,6 +102,8 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_gethistory(void);
+extern uint64 sys_block(void);
+extern uint64 sys_unblock(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -128,6 +130,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_gethistory]  sys_gethistory,
+[SYS_block] sys_block,
+[SYS_unblock] sys_unblock,
 };
 
 void
@@ -137,9 +141,17 @@ syscall(void)
   struct proc *p = myproc();
 
   num = p->trapframe->a7;
-  if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-    // Use num to lookup the system call function for num, call it,
-    // and store its return value in p->trapframe->a0
+
+  // Check if the syscall number is within a valid range
+  if (num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+    // Check if the syscall is blocked for this process
+    if (p->blocked_syscalls[num]) {
+      printf("Process %d (%s) attempted blocked syscall %d\n", p->pid, p->name, num);
+      p->trapframe->a0 = -1;  // Return an error code
+      return;
+    }
+
+    // Execute the system call
     p->trapframe->a0 = syscalls[num]();
   } else {
     printf("%d %s: unknown sys call %d\n",
