@@ -106,7 +106,7 @@ sys_uptime(void)
 }
 
 uint64
-sys_history(void)
+sys_gethistory(void)
 {
   struct proc *p = myproc();
   uint64 user_buf;

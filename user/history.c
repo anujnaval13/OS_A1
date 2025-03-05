@@ -13,7 +13,7 @@ struct history_entry {
 
 int main() {
     struct history_entry hist[HISTORY_SIZE];  // Use struct array instead of char buffer
-    int count = history((void *)hist);  // Fetch process history
+    int count = gethistory((void *)hist);  // Fetch process history
 
     if (count < 0) {
         printf("history failed\n");
