@@ -104,6 +104,7 @@ extern uint64 sys_close(void);
 extern uint64 sys_gethistory(void);
 extern uint64 sys_block(void);
 extern uint64 sys_unblock(void);
+extern uint64 sys_chmod(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -132,6 +133,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_gethistory]  sys_gethistory,
 [SYS_block] sys_block,
 [SYS_unblock] sys_unblock,
+[SYS_chmod] sys_chmod,
 };
 
 void
